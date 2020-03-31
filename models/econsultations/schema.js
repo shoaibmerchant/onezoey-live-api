@@ -53,7 +53,16 @@ export default {
     },
     patient_rating_feedback: {
       type: Types.String
-    }
+    },
+    appointment_date: {
+      type: Types.String,
+    },
+    appointment_time: {
+      type: Types.String,
+    },
+    status: {
+      type: Types.String
+    },
   },
   relations: {
     parent: [

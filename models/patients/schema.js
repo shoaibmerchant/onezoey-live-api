@@ -27,7 +27,12 @@ export default {
       label: "Mobile",
       required: true
     },
-
+    age: {
+      type: Types.Int,
+    },
+    sex: {
+      type: Types.String,
+    },
     display_picture_url: {
       type: Types.String
     }

@@ -1,11 +1,19 @@
 import _ from './env'
 import {MirkwoodServer} from '@actonate/mirkwood';
 import express from 'express';
+import bodyParser from 'body-parser';
 import * as config from './config';
 import * as models from './models';
+import paymentHandler from './routes/payment';
 
 const server = express();
+
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
+
 const FRONT_END_URL = process.env['WEBSITE_URL'];
+
+server.post('/payment/rzp/:txnId', paymentHandler);
 
 const mirkwoodServer = new MirkwoodServer({
   config,
