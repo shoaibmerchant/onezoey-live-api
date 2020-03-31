@@ -1,0 +1,26 @@
+/node_modules/
+/.next/
+/static/libs/**/*.map
+/.idea
+/tmp
+jsconfig.json
+notes.text
+.babelrc_notInUse
+/uploads/
+images_old/
+/.vscode/
+images.zip
+npm-debug.log
+# Mirkwood RX (Dev)
+mirkwood-rx/
+mirkwood/
+.notes
+pluginReferences/
+/static/pdf
+/dist/
+npm-debug.log*
+.env
+.env.production
+.env.development
+/sitemap.xml
+/meta/sitemap.xml
