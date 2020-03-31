@@ -62,6 +62,9 @@ export default {
     },
     description: {
       type: Types.String
+    },
+    token: {
+      type: Types.String
     }
   },
   relations: {

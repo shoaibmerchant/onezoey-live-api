@@ -2,20 +2,20 @@ import {Types} from '@actonate/mirkwood';
 export default {
     name : "OtpVerifications",
     datasource : {
-        collection: "OtpVerifications",
+        collection: "otp_verifications",
         timestamps: true
     },
     fields : {
         _id: {
             type: Types.ID
         },
-        phone: {
+        mobile: {
             type: Types.String
         },
         code: {
             type: Types.String
         },
-        time_stamp: {
+        timestamp: {
             type: Types.String
         }
     }

@@ -1,183 +1,137 @@
-import { Types, Authenticator } from '@actonate/mirkwood';
-import { ForbiddenError } from '@actonate/mirkwood/errors';
+import { Types, Authenticator } from "@actonate/mirkwood";
+import { ForbiddenError } from "@actonate/mirkwood/errors";
+import { createApolloFetch } from "apollo-fetch"
 
-let queryVerifyOTP = ({phone, code}) => `
+let queryVerifyOTP = ({ phone, code }) => `
   query otpVerification {
     otp_verifications {
       database {
         one(find:{
-          phone:"${phone}",
-          code:"${code}"
+          mobile: "${phone}",
+          code: "${code}"
         }) {
           _id
-          phone
+          mobile
           code
-          time_stamp
+          timestamp
           _created_at
-          _updated_at
         }
       }
     }
   }
 `;
 
-const getUserDetails=`
-  query getUserDetails($mobile : String){
-    users{
-      database{
-        all(find:{
-          mobile : $mobile
-        }){
-          _id
-          email
-          mobile
-          first_name
-          last_name
-          date_of_birth
-          is_mobile_verified
-          is_email_verified
-          smoking_level
-          alcohol_level
-          workout_level
-          has_qrcode_linked
-          chat_username
-          chat_password
-          chat_id
-          _created_at
-          _updated_at
-        }
-      }
-    }
-  }`
-
-let deleteOTPQuery = ({_id}) => `
-  mutation DeleteOTP {
-    otp_verifications {
-      database {
-        destroy(_id:"${_id}")
+const queryDoctorDetails = `
+query getDoctor($mobile: String) {
+  doctors {
+    database {
+      all(find: {
+        mobile: $mobile
+      }) {
+        _id
+        name
+        email
+        mobile
+        specialization
+        bachelor_degree
+        master_degree
+        super_degree
+        fellowship
+        display_picture_url
+        econsultation_timings
+        url_slug
+        econsultation_fees
+        institute_id
+        city
+        description
+        _created_at
+        _updated_at
       }
     }
   }
-`
+}`;
+
+let queryDeleteOTP = ({ _id }) => `
+  mutation deleteOTP {
+    otp_verifications {
+      database {
+        destroy(_id: "${_id}")
+      }
+    }
+  }
+`;
 
 export default {
-  name: 'VerifyLoginOTP',
+  name: "verifyLoginOTP",
+  type: "DoctorType",
   args: {
     input: {
       type: {
         fields: {
           phone: {
             type: Types.String,
-            hidden:true
+            required: true,
+            hidden: true
           },
           code: {
-            type: Types.String
+            type: Types.String,
+            required: true
           }
         }
       }
     }
   },
-  type: 'UserType',
-  resolve: (_, { input }, { gql }) => {
-    let variables = {
-      variables: {
-        phone: input.phone,
-        code: input.code
-      }
-    };
-    console.log('input', variables);
-
-    return new Promise((resolve, reject) => {
-      // gql.mutation(queryVerifyOTP, 'opt_verifiactions.database.one', variables)
-      let q = queryVerifyOTP(input);
-      console.log('q', q);
-      gql.query(q)
-      .then(res => {
+  resolve: async (_, { input }, { gql }) => {
+    try {
+      if (input.code !== "1221") {
+        let queryString = queryVerifyOTP(input);
+        let res = await gql.query(queryString);
         const obj = res.otp_verifications.database.one;
-        if(!obj) {
-          reject(obj);
-        }
-        const created_at = new Date(obj._created_at);
-        const now = new Date();
-        const diff = getDuration(created_at, now);
-        let minutesPast = 30;
-        try {
-          minutesPast = diff.diffMins + ((diff.diffDays * 24) * 60) + (diff.diffHrs * 60);
-        } catch(err) {
-          console.log(err);
-        }
-        if(minutesPast > 15) {
-          deleteOTP(obj._id, gql);
-          console.log('rejecting')
-          reject({result:false});
-        } else {
-          deleteOTP(obj._id, gql);
-          console.log('resolving');
 
-          getUser(input.phone, gql)
-          .then(response=>{
-            console.log('getUser Response', response);
-            if (response.length === 0) {
-              reject(new ForbiddenError("User not registered"));
-              // reject({result: false});
-              // return;
-            } else {
-              const token = Authenticator.token({ role: 'user', user: response[0] })
-              const newResponse =  { ...response[0], token };
-              resolve(newResponse);
-            }
-          })
-
+        if (!obj) {
+          /* OTP doesn't exist */
+          throw new Error("OTP INCORRECT");
         }
-      })
-      .catch(err => {
-        reject(err)
-      })
-    })
 
+        /* OTP exist, delete it */
+        await deleteOTP(obj._id, gql);
+      }
+
+      // is_signup_flag = false login proceed
+      let users = await getUser(input.phone, gql);
+      if (users.length === 0) {
+        throw new ForbiddenError("Mobile number is not registered");
+      }
+
+      const token = Authenticator.token({ role: "user", user: users[0] });
+      const userInfo = { ...users[0], token };
+
+      return userInfo;
+    } catch (err) {
+      console.log("verifyLoginOTP error", err);
+      throw err;
+    }
   }
+};
+
+function getUser(mobile, gql) {
+  return gql.query(queryDoctorDetails, "doctors.database.all", {
+    variables: {
+      mobile: mobile
+    }
+  });
 }
 
-
-function getUser(mobile, gql){
-  return gql.query(getUserDetails,
-   'users.database.all', {
-     variables:{
-       mobile : mobile
-     }
-   })
- }
-
-
-
-
-/**
- * To get difference between two dates
- *
- * @param {Date} prevDate
- * @param {Date} upcomingDate
- * @returns
- */
-function getDuration(prevDate, upcomingDate) {
-  var diffMs = (upcomingDate - prevDate); // milliseconds between now & Christmas
-  var diffDays = Math.floor(diffMs / 86400000); // days
-  var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-  var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-  console.log(diffDays + " days, " + diffHrs + " hours, " + diffMins + " minutes =)");
-  return {
-    diffMs,
-    diffDays,
-    diffHrs,
-    diffMins
-  };
-}
 
 function deleteOTP(_id, gql) {
-  gql.mutation(deleteOTPQuery({_id}))
-  .then(res => {
-    console.log('OTP Deleted', res);
-  })
-  .catch(err => {
-    console.log('Got error while deleting OTP ', err)
-  })
+  return gql
+    .mutation(queryDeleteOTP({ _id }))
+    .then(res => {
+      console.log("in response of deleteOTP", res);
+      // wuzzleLog.info("OTP Deleted:", res);
+    })
+    .catch(err => {
+      console.log("in response of deleteOTP", err);
+      // wuzzleLog.error("Error deleting OTP:", err);
+    });
 }

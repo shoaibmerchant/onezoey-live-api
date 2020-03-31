@@ -1,108 +1,140 @@
-import { Types } from '@actonate/mirkwood';
+import { Types } from "@actonate/mirkwood";
 
-
-import _sendOTPSMS from "./_sendOTPSMS";
-// import _sendSMS from './_sendSMS';
-
-
+const MSG91_SENDER = process.env.MSG91_SENDER;
+const MSG91_URL = process.env.MSG91_URL;
 
 function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
+  return Math.random() * (max - min) + min;
 }
 
 function getRandomOtp() {
-	let otp = Math.floor(getRandomArbitrary(1000, 9999));
-	return otp;
+  let otp = Math.floor(getRandomArbitrary(1000, 9999));
+  return otp;
 }
 
-function getTimeStamp(){
-	let stamp = new Date().getTime();
-	return stamp;
+function getTimeStamp() {
+  let stamp = new Date();
+  return stamp.toISOString();
 }
-
 
 export default {
-	name: 'VerificationOtp',
-	args: {
-		input: {
-			type: {
-				fields: {
-					phone: {
-						type: Types.String
-					}
-				}
-			}
-		}
-	},
-	resolve: (_, {input }, { gql }) => (
-		 new Promise((resolve, reject) => {
-			console.log('OTP VERIFICATION  - 1');
-			let otp = getRandomOtp();
-			console.log('OTP VERIFICATION  - 2', otp);
+  name: "generateOTP",
+  args: {
+    input: {
+      type: {
+        fields: {
+          phone: {
+            type: Types.String
+          }
+        }
+      }
+    }
+  },
+  resolve: (_, { input }, { gql }) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        console.log("Generating OTP");
 
-			let timeStamp = getTimeStamp();
-			console.log('OTP VERIFICATION  - 3', timeStamp);
+        await deleteOTP(input.phone, gql);
 
-      let countryMobile = input.phone.startsWith('+') ? input.phone : `+91${input.phone}`
-			gql
-			.mutation(`
-			mutation otp_verification {
-				otp_verifications {
-						database {
-							create(input:{
-								phone: "${input.phone}",
-								code: "${otp}",
-								time_stamp: "${timeStamp}"
-							}) {
-								_id
-								code
-								phone
-								time_stamp
-								}
-						}
-						_sendOTPSMS(body:
-							{
-								mobiles: "${input.phone}",
-								sender: "ONEZOEY",
-								message: "Your OTP for One Zoey is ${otp}"
-							},
-							url: "https://control.msg91.com/api/sendhttp.php"
-						)
-					}
-			}
-			`, 'otp_verifications.database.create')
-			.then((res) => {
-				console.log('OTP VERIFICATION  - 4 res', res);
-				resolve(res);
-			})
-			.catch((err) => {
-				console.log('OTP VERIFICATION  - 4 err', err);
-				reject(err);
-			});
-		})
-	)
+        let otp;
+
+        otp = getRandomOtp();
+
+        const otpMessage = `Your OTP for OneZoey for Doctor App is ${otp}.`;
+        console.log("otpMessage ", otpMessage);
+
+        const userPhone = `+91${input.phone}`;
+
+        gql
+          .mutation(
+            `mutation createOTPVerification {
+                  otp_verifications {
+                      database {
+                          create(input: {
+                              mobile: "${input.phone}",
+                              code: "${otp}",
+                          }) {
+                              _id
+                              code
+                              mobile
+                          }
+                      }
+              }
+            }`,
+            "otp_verifications.database.create"
+          )
+          .then(async res => {
+            console.log("OTP created in database", res);
+
+            // call mutation for send otp via MSG91
+            var resOfSendOtpMsg = await sendOTPMSGTroughMSG91(
+              userPhone,
+              otpMessage,
+              gql
+            );
+
+            console.log('Response from SMS Gateway', resOfSendOtpMsg);
+
+            resolve(res);
+          })
+          .catch(err => {
+            console.log('Error sending OTP', err);
+            reject(err);
+          });
+      } catch (error) {
+        console.log("Error in generating OTP", error);
+      }
+    })
 };
 
-// MSG91
-// _sendOTPSMS(body:
-//   {
-//     mobiles: "${input.phone}",
-//     sender: "NEOGAM",
-//     message: "Your OTP for Neon Gaming Studio is ${otp}"
-//   },
-// url: "https://control.msg91.com/api/sendhttp.php"
-// )
+let queryDeleteOTP = ({ phone }) => `
+  mutation deleteOTP {
+    otp_verifications {
+      database {
+        destroy(find:{
+          mobile: "${phone}"
+        })
+      }
+    }
+  }
+`;
 
+function deleteOTP(phone, gql) {
+  return gql
+    .mutation(queryDeleteOTP({ phone }))
+    .then(res => {
+      console.log("in response of deleteOTP", res);
+    })
+    .catch(err => {
+      console.log("error in response of deleteOTP", err);
+    });
+}
 
+let mutationSendOTPMSGTroughMSG91 = ({ phone, otpMessage }) => `
+mutation SendOTPMSG {
+  otp_verifications {
+      sendOTPMessage(body: {
+              mobiles: "${phone}",
+              sender: "${MSG91_SENDER}",
+              message: "${otpMessage}"
+          },
+          url: "${MSG91_URL}"
+      )
+  }
+}
+`;
 
-// _sendSMS(input: {
-// 	message:"Your OTP for Rao Groups is ${otp}"
-// 	mobile: "${countryMobile}"
-// 	}) {
-// 		_id
-// 		phone
-// 		code
-// 	time_stamp
-// 	_created_at
-// 	_updated_at
-// }
+function sendOTPMSGTroughMSG91(phone, otpMessage, gql) {
+  console.log("params send to MSG91", phone, otpMessage);
+
+  return gql
+    .mutation(mutationSendOTPMSGTroughMSG91({ phone, otpMessage }))
+    .then(res => {
+      console.log("in response of sendotp via MSG91", res);
+    })
+    .catch(err => {
+      console.log("error in response of sendotp via MSG91", err);
+    });
+}
+
