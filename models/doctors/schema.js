@@ -48,7 +48,9 @@ export default {
     econsultation_timings: {
       type: Types.String
     },
-
+    url_slug: {
+      type: Types.String
+    },
     econsultation_fees: {
       type: Types.Float
     },
@@ -56,6 +58,9 @@ export default {
       type: Types.ID
     },
     city: {
+      type: Types.String
+    },
+    description: {
       type: Types.String
     }
   },
