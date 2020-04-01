@@ -23,6 +23,7 @@ export default {
   },
   type: Types.Boolean,
   resolve: async (_, { input }, { gql, req }) => {
+    console.log('GQL Completingg econsulation', input);
     try {
       const econsultUpdate = {
         transaction_ref: input.transaction_ref,

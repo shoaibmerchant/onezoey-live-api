@@ -8,6 +8,12 @@ import paymentHandler from './routes/payment';
 
 const server = express();
 
+server.set('forceSSLOptions', {
+  enable301Redirects: true,
+  trustXFPHeader: false,
+  httpsPort: 443,
+  sslRequiredMessage: 'SSL Required.'
+});
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 

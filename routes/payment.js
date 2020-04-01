@@ -4,7 +4,7 @@ import { get } from 'lodash';
 const { WEBSITE_URL, GRAPHQL_ENDPOINT } = process.env;
 
 const completeEConsultationMutation = `
-mutation completeEConsultation($transactionRef: String!, $econsultId: ID!) {
+mutation completeEConsultation($transactionRef: String!, $econsultCode: String!) {
   econsultations {
     completeEConsultation(input: {
       transaction_ref: $transactionRef,
@@ -39,6 +39,7 @@ export default (req, res) => {
   })
     .then((result) => {
       const econsultResponse = get(result, 'data.econsultations.completeEConsultation');
+      console.log(econsultResponse);
       res.redirect(`${WEBSITE_URL}/econsult/confirm/${txnId}`);
     })
     .catch((err) => {
