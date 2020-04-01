@@ -14,7 +14,8 @@
     "babel-prod": "NODE_ENV=production babel . --presets babel-preset-es2015,babel-preset-stage-2 --out-dir dist --ignore ./dist,./node_modules",
     "build-dev": "NODE_ENV=production && npm run babel-dev",
     "build-local": "NODE_ENV=local",
-    "build-prod": "NODE_ENV=production && npm run babel-prod"
+    "build-prod": "NODE_ENV=production && npm run babel-prod",
+    "start": "NODE_ENV=development && npm run babel-prod && node ./dist/server.js" 
   },
   "keywords": [
     "OnezoeyLive"
