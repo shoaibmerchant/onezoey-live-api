@@ -4,6 +4,15 @@ import { Authenticator } from '@actonate/mirkwood';
 import { UnknownError } from '@actonate/mirkwood/errors';
 import fetch from "isomorphic-unfetch";
 
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function getRandomCode() {
+  let otp = Math.floor(getRandomArbitrary(100000, 999999));
+  return otp;
+}
+
 export default {
   name: 'createEConsultation',
   args: {
@@ -21,6 +30,9 @@ export default {
           },
           patient_age: {
             type: Types.String
+          },
+          patient_problem: {
+            type: Types.String,
           },
           doctor_id: {
             type: Types.String,
@@ -50,6 +62,9 @@ export default {
       },
       econsultation_id: {
         type: Types.ID,
+      },
+      econsultation_code: {
+        type: Types.String,
       }
     })
   },
@@ -71,6 +86,8 @@ export default {
         amount: input.amount,
         status: "PENDING",
         patient_id: patientResult._id,
+        code: getRandomCode(),
+        patient_problem: input.patient_problem,
       };
 
       const econsultResult = await createEConsultation(econsult, gql);
@@ -80,6 +97,7 @@ export default {
       return {
         pg_order_id: order.id,
         econsultation_id: econsultResult._id,
+        econsultation_code: econsult.code,
       };
     } catch(err) {
       console.log("Error creating econsultation", err);

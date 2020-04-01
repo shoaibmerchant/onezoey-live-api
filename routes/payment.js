@@ -8,7 +8,7 @@ mutation completeEConsultation($transactionRef: String!, $econsultId: ID!) {
   econsultations {
     completeEConsultation(input: {
       transaction_ref: $transactionRef,
-      econsultation_id: $econsultId
+      econsultation_code: $econsultCode
     })
   }
 }`;
@@ -27,7 +27,7 @@ export default (req, res) => {
 
   const apolloFetch = createApolloFetch({ uri: GRAPHQL_ENDPOINT });
   const variables = {
-    econsultId: txnId,
+    econsultCode: txnId,
     transactionRef: req.body.razorpay_payment_id,
   };
 

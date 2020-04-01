@@ -12,6 +12,9 @@ export default {
       type: Types.ID,
       hidden: true
     },
+    code: {
+      type: Types.String
+    },
     transaction_ref: {
       type: Types.String
     },
@@ -53,6 +56,9 @@ export default {
     },
     patient_rating_feedback: {
       type: Types.String
+    },
+    patient_problem: {
+      type: Types.String,
     },
     appointment_date: {
       type: Types.String,
