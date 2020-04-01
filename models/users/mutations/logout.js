@@ -1,10 +1,10 @@
 
 
-import { Types } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
 
-import { Authenticator } from '@actonate/mirkwood';
+import { Authenticator } from 'mirkwood-graphql';
 
-import { UnknownError, ForbiddenError, AuthenticationRequiredError } from '@actonate/mirkwood/errors';
+import { UnknownError, ForbiddenError, AuthenticationRequiredError } from 'mirkwood-graphql/errors';
 
 
 

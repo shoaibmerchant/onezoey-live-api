@@ -1,6 +1,6 @@
-import { Types } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
 import bcrypt from 'bcrypt';
-import { Authenticator } from '@actonate/mirkwood'
+import { Authenticator } from 'mirkwood-graphql'
 import { error } from 'util';
 
 const welcomeEmail = `mutation sendEmail($template:String, $options:UserSignupEmail_optionsInputType){

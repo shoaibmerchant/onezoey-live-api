@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import {withApollo} from 'react-apollo';
-import {Types} from '@actonate/mirkwood';
+import {Types} from 'mirkwood-graphql';
 import {map , get} from 'lodash'
 // import  'cosmetize-prod'  from '../app-config/constants/ImagePaths'
 

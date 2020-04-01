@@ -1,4 +1,4 @@
-import {Types} from '@actonate/mirkwood';
+import {Types} from 'mirkwood-graphql';
 export default {
     name : "OtpVerifications",
     datasource : {

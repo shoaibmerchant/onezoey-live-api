@@ -1,6 +1,6 @@
-import { Types } from '@actonate/mirkwood';
-import { Authenticator } from '@actonate/mirkwood';
-import { UnknownError } from '@actonate/mirkwood/errors';
+import { Types } from 'mirkwood-graphql';
+import { Authenticator } from 'mirkwood-graphql';
+import { UnknownError } from 'mirkwood-graphql/errors';
 import fetch from "isomorphic-unfetch";
 
 const AccessToken = require('twilio').jwt.AccessToken;

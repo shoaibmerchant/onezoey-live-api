@@ -1,4 +1,4 @@
-import { Types, Authenticator } from '@actonate/mirkwood';
+import { Types, Authenticator } from 'mirkwood-graphql';
 import async from 'async';
 
 

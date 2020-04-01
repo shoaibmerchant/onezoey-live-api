@@ -1,7 +1,7 @@
 import sha1 from 'sha1';
-import { Types } from '@actonate/mirkwood';
-import { Authenticator } from '@actonate/mirkwood';
-import { UnknownError } from '@actonate/mirkwood/errors';
+import { Types } from 'mirkwood-graphql';
+import { Authenticator } from 'mirkwood-graphql';
+import { UnknownError } from 'mirkwood-graphql/errors';
 import fetch from "isomorphic-unfetch";
 
 function getRandomArbitrary(min, max) {

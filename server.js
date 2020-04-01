@@ -1,5 +1,5 @@
 import _ from './env'
-import {MirkwoodServer} from '@actonate/mirkwood';
+import {MirkwoodServer} from 'mirkwood-graphql';
 import express from 'express';
 import bodyParser from 'body-parser';
 import * as config from './config';

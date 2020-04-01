@@ -1,4 +1,4 @@
-import { Types } from "@actonate/mirkwood";
+import { Types } from "mirkwood-graphql";
 
 const MSG91_SENDER = process.env.MSG91_SENDER;
 const MSG91_URL = process.env.MSG91_URL;

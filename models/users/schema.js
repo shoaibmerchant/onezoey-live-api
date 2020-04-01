@@ -1,6 +1,6 @@
 import {
   Types
-} from '@actonate/mirkwood';
+} from 'mirkwood-graphql';
 
 export default {
   name: 'User',

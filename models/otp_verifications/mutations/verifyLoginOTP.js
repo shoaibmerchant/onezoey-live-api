@@ -1,5 +1,5 @@
-import { Types, Authenticator } from "@actonate/mirkwood";
-import { ForbiddenError } from "@actonate/mirkwood/errors";
+import { Types, Authenticator } from "mirkwood-graphql";
+import { ForbiddenError } from "mirkwood-graphql/errors";
 import { createApolloFetch } from "apollo-fetch"
 
 let queryVerifyOTP = ({ phone, code }) => `

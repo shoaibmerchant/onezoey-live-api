@@ -1,4 +1,4 @@
-import { Types } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
 import { getItem, indexDoctor, indexSuggestProduct } from '../../../libs/FlattenItem';
   
 export default {

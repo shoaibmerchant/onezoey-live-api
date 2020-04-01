@@ -1,4 +1,4 @@
-import {Types} from '@actonate/mirkwood';
+import {Types} from 'mirkwood-graphql';
 import {map} from 'lodash'
 import {ElasticSearchQueries} from '../../../libs/ElasticSearchQueries'
 export default {

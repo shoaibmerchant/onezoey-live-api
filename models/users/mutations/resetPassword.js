@@ -1,4 +1,4 @@
-import { Types } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
 import bcrypt from 'bcrypt';
 
 const changePasswordMutation = `

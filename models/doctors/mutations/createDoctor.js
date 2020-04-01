@@ -1,4 +1,4 @@
-import { Authenticator } from '@actonate/mirkwood';
+import { Authenticator } from 'mirkwood-graphql';
 
 
 const createDoctorMutation = `

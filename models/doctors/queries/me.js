@@ -1,6 +1,6 @@
 import sha1 from 'sha1';
-import { Types } from '@actonate/mirkwood';
-import { Authenticator } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
+import { Authenticator } from 'mirkwood-graphql';
 
 export default {
   name: 'UserMe',

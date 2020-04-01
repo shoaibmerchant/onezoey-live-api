@@ -1,8 +1,8 @@
 
-import { Types } from '@actonate/mirkwood';
-import { Authenticator } from '@actonate/mirkwood';
+import { Types } from 'mirkwood-graphql';
+import { Authenticator } from 'mirkwood-graphql';
 import bcrypt from 'bcrypt';
-import { UnknownError, ForbiddenError, AuthenticationRequiredError } from '@actonate/mirkwood/errors';
+import { UnknownError, ForbiddenError, AuthenticationRequiredError } from 'mirkwood-graphql/errors';
 
 const getpasswordhash=`
   query getpasswordhash($email:User_FindInputType!){

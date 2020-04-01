@@ -1,5 +1,5 @@
-import { Types } from '@actonate/mirkwood';
-import { Authenticator } from '@actonate/mirkwood'
+import { Types } from 'mirkwood-graphql';
+import { Authenticator } from 'mirkwood-graphql'
 import { error } from 'util';
 
 export default {
