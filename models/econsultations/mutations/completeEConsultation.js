@@ -1,4 +1,5 @@
 import sha1 from 'sha1';
+import dayjs from 'dayjs';
 import { Types } from 'mirkwood-graphql';
 import { Authenticator } from 'mirkwood-graphql';
 import { UnknownError } from 'mirkwood-graphql/errors';
@@ -31,11 +32,12 @@ export default {
       console.log('Completing econsultation', input.econsultation_code);
       const updateResult = await updateEConsultation(input.econsultation_code, econsultUpdate, gql);
 
-      // if (updateResult) {
-      //   const econsult = await getEConsult(input.econsultation_code);
-      //   await sendSMSToDoctor(input.econsultation_code);
-      //   await sendSMSToPatient(input.econsultation_code);
-      // }
+      if (updateResult) {
+        const econsult = await getEConsult(input.econsultation_code, gql);
+        console.log('Econsult found', econsult);
+        await sendSMSToDoctor(econsult, gql);
+        await sendSMSToPatient(econsult, gql);
+      }
 
       return true;
     } catch (err) {
@@ -47,7 +49,7 @@ export default {
 
 
 const updateEConsultation = async (econsultCode, input, gql) => {
-  return await gql.mutation(`
+  const res = await gql.mutation(`
     mutation updateEConultation($econsultCode: String!, $input: Econsultation_UpdateInputType!) {
       econsultations {
         database {
@@ -64,33 +66,132 @@ const updateEConsultation = async (econsultCode, input, gql) => {
       input,
     }
   });
+  return res;
 }
 
+const getEConsult = async (econsultCode, gql) => {
+  const res = await gql.query(`
+    query getEConsultation($econsultCode: String!) {
+      econsultations {
+        database {
+          one(find: {
+            code: $econsultCode
+          }) {
+            _id
+            code
+            amount
+            patient_id
+            doctor_id
+            institute_id
+            remarks
+            conclusion
+            notes
+            start_time
+            end_time
+            doctor_rating
+            doctor_rating_feedback
+            patient_rating
+            patient_rating_feedback
+            appointment_date
+            appointment_time
+            status
+            _created_at
+            _updated_at
+            _parent {
+              doctor {
+                _id
+                name
+                email
+                mobile
+                specialization
+                bachelor_degree
+                master_degree
+                super_degree
+                fellowship
+                display_picture_url
+                econsultation_timings
+                url_slug
+                econsultation_fees
+                institute_id
+                city
+                description
+                token
+                _created_at
+                _updated_at
+              }
+              patient {
+                _id
+                name
+                email
+                mobile
+                age
+                sex
+                display_picture_url
+                _created_at
+                _updated_at
+              }
+            }
+          }
+        }
+      }
+    }
+  `, 'econsultations.database.one', {
+    variables: {
+      econsultCode: econsultCode,
+    }
+  });
 
-// const sendMessageMutation = ({ phone, message }) => `
-// mutation SendOTPMSG {
-//   otp_verifications {
-//       sendOTPMessage(body: {
-//               mobiles: "${phone}",
-//               sender: "${MSG91_SENDER}",
-//               message: "${message}"
-//           },
-//           url: "${MSG91_URL}"
-//       )
-//   }
-// }
-// `;
+  return res;
+}
 
-// const sendSMSToDoctor = async (phone, econsult, gql) => {
-//   const message = `You have a new econsultation appointment on OneZoey. Patient Name is Shoaib Merchant (24, Male), and appointment time is 10:15 AM on 21st March`;
-//   console.log("params send to MSG91", phone, otpMessage);
+const sendSMSToPatient = async (econsult, gql) => {
+  const { doctor } = econsult._parent;
+  const { patient } = econsult._parent;
 
-//   return gql
-//     .mutation(mutationSendOTPMSGTroughMSG91({ phone, otpMessage }))
-//     .then(res => {
-//       console.log("in response of sendotp via MSG91", res);
-//     })
-//     .catch(err => {
-//       console.log("error in response of sendotp via MSG91", err);
-//     });
-// }
+  const phone = patient.mobile;
+
+  const econsultUrl = `${process.env.WEBSITE_URL}/econsult/v/${econsult.code}`;
+  const message = `Your appointment with ${doctor.name} is confirmed. Your appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}. Open ${econsultUrl} on your phone to connect with your doctor.`;
+  console.log("params send to MSG91", phone, message);
+
+  return gql
+    .mutation(sendSMSMutation({ phone, message }))
+    .then(res => {
+      console.log("in response of sending via MSG91", res);
+    })
+    .catch(err => {
+      console.log("error in response of sending via MSG91", err);
+    });
+}
+
+const sendSMSToDoctor = async (econsult, gql) => {
+  const { doctor } = econsult._parent;
+  const { patient } = econsult._parent;
+
+  const phone = doctor.mobile;
+  const message = `You have a new econsultation appointment on OneZoey. Patient Name is ${patient.name} (${patient.age}, ${patient.sex}), and appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}.`;
+  console.log("params send to MSG91", phone, message);
+
+  return gql
+    .mutation(sendSMSMutation({ phone, message }))
+    .then(res => {
+      console.log("in response of sending via MSG91", res);
+    })
+    .catch(err => {
+      console.log("error in response of sending via MSG91", err);
+    });
+}
+
+let sendSMSMutation = ({ phone, message }) => `
+mutation SendOTPMSG {
+  otp_verifications {
+      sendOTPMessage(body: {
+              mobiles: "${phone}",
+              sender: "${process.env.MSG91_SENDER}",
+              message: "${message}"
+          },
+          url: "${process.env.MSG91_URL}"
+      )
+  }
+}
+`;  
