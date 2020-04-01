@@ -4,7 +4,7 @@
 
 const session = {
 	local: {
-		store: 'redis',
+		store: 'file',
 		secret: process.env.SESSION_SECRET,
 		path: './tmp/sessions',
 		cookie: { maxAge: 604800000 },
@@ -14,7 +14,7 @@ const session = {
 		}
 	},
 	development: {
-		store: 'redis',
+		store: 'file',
 		secret: process.env.SESSION_SECRET,
 		path: './tmp/sessions',
 		cookie: {
@@ -27,7 +27,7 @@ const session = {
 		}
 	},
 	production: {
-		store: 'redis',
+		store: 'file',
 		secret: process.env.SESSION_SECRET,
 		path: './tmp/sessions',
 		cookie: {
