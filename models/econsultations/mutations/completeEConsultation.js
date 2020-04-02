@@ -170,7 +170,7 @@ const sendSMSToDoctor = async (econsult, gql) => {
   const { patient } = econsult._parent;
 
   const phone = doctor.mobile;
-  const message = `You have a new econsultation appointment on OneZoey. Patient Name is ${patient.name} (${patient.age}, ${patient.sex}), and appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}.`;
+  const message = `You have a new econsultation appointment on OneZoey. Patient Name is ${patient.name} (${patient.age}, ${patient.sex}), and appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}. Open live.onezoey.com to view more information.`;
   console.log("params send to MSG91", phone, message);
 
   return gql
