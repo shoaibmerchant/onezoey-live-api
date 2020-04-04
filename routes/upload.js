@@ -72,7 +72,7 @@ class Uploader {
   checkFileType(file, cb) {
     console.log("file.orginalName", file.originalname, file.mimetype);
     // Allowed ext
-    const filetypes = /image\/jpg|image\/jpeg|jpeg|jpg|png|mp4/;
+    const filetypes = /image\/jpg|image\/jpeg|jpeg|jpg|png|pdf|docx|mp4/;
     // Check ext
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
