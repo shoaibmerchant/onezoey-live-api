@@ -13,7 +13,7 @@ const callCustomer = async (options) => {
   );
   const callInstance = await client.calls.create({
     url: `${process.env.API_URL}/callCustomerRequest?options=${encodedOptions}`,
-    to: `+91${options.mobileNumber}`,
+    to: `${options.mobileNumber}`,
     from: "+918000402996"
   });
 
@@ -43,9 +43,9 @@ export default {
     try {
       const econsult = await getEConsult(input.econsultation_code, gql);
       const call = await callCustomer({ 
-        mobileNumber: econsult._parent.doctor.mobile,
+        mobileNumber: `+91${econsult._parent.doctor.mobile}`,
         doctorName: econsult._parent.doctor.name.slice(3),
-        patientMobileNumber: econsult._parent.patient.mobile,
+        patientMobileNumber: `+91${econsult._parent.patient.mobile}`,
       })
       return true;
     } catch (err) {
