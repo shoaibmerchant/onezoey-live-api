@@ -8,6 +8,9 @@ import * as models from './models';
 import paymentHandler from './routes/payment';
 import uploadHandler from "./routes/upload";
 import pusherAuthHandler from "./routes/pusherauth";
+const callCustomerRequestHandler = require("./routes/callCustomerRequest");
+const callCustomerHandler = require("./routes/callCustomer");
+
 const server = express();
 
 server.set('forceSSLOptions', {
@@ -26,6 +29,9 @@ const FRONT_END_URL = process.env['WEBSITE_URL'];
 
 server.post('/pusher/auth', pusherAuthHandler);
 server.post('/payment/rzp/:txnId', paymentHandler);
+server.get("/callCustomerRequest", callCustomerRequestHandler);
+server.post("/callCustomer", callCustomerHandler);
+
 
 const mirkwoodServer = new MirkwoodServer({
   config,
