@@ -54,6 +54,12 @@ export default {
     patient_rating: {
       type: Types.String
     },
+    patient_doctor_rating: {
+      type: Types.String
+    },
+    patient_video_rating: {
+      type: Types.String
+    },
     patient_rating_feedback: {
       type: Types.String
     },
@@ -69,6 +75,12 @@ export default {
     status: {
       type: Types.String
     },
+    prescription_path: {
+      type: Types.String,
+    },
+    is_doctor_reviewed: {
+      type: Types.Boolean,
+    }
   },
   relations: {
     parent: [
