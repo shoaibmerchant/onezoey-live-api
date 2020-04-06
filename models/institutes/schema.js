@@ -55,6 +55,9 @@ export default {
     },
     contact_person_name: {
       type: Types.String
+    },
+    url_slug: {
+      type: Types.String,
     }
   },
   relations: {
