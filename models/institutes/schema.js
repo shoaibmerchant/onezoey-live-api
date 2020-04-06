@@ -58,6 +58,9 @@ export default {
     },
     url_slug: {
       type: Types.String,
+    },
+    is_published: {
+      type: Types.Boolean,
     }
   },
   relations: {
