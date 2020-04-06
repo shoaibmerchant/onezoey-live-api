@@ -65,7 +65,10 @@ export default {
     },
     token: {
       type: Types.String
-    }
+    },
+    is_published: {
+      type: Types.Boolean,
+    },
   },
   relations: {
     parent: [
