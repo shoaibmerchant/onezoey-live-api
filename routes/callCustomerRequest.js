@@ -11,7 +11,7 @@ const CallCustomerRequest = (request, response) => {  console.log("Request", req
 
   const { doctorName, patientMobileNumber } = JSON.parse(options);
 
-  const sayOptions = { voice: "Polly.Aditi", language: "en-IN" };
+  const sayOptions = { voice: "Polly.Raveena", language: "hi-IN" };
 
   // check if the user has entered
   // If the user entered digits, process their request

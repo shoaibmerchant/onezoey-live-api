@@ -44,7 +44,7 @@ export default {
       const econsult = await getEConsult(input.econsultation_code, gql);
       const call = await callCustomer({ 
         mobileNumber: `+91${econsult._parent.doctor.mobile}`,
-        doctorName: econsult._parent.doctor.name.slice(3),
+        doctorName: `Doctor ${econsult._parent.doctor.name.slice(3)}`,
         patientMobileNumber: `+91${econsult._parent.patient.mobile}`,
       })
       return true;
