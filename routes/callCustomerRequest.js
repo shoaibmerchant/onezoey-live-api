@@ -25,8 +25,8 @@ const CallCustomerRequest = (request, response) => {  console.log("Request", req
   twiml.say('Goodbye');
 
   // Render the response as XML in reply to the webhook request
-  twiml.type("text/xml");
-  twiml.send(twiml.toString());
+  response.type("text/xml");
+  response.send(twiml.toString());
 };
 
 module.exports = CallCustomerRequest;
