@@ -30,6 +30,7 @@ const FRONT_END_URL = process.env['WEBSITE_URL'];
 server.post('/pusher/auth', pusherAuthHandler);
 server.post('/payment/rzp/:txnId', paymentHandler);
 server.get("/callCustomerRequest", callCustomerRequestHandler);
+server.post("/callCustomerRequest", callCustomerRequestHandler);
 server.post("/callCustomer", callCustomerHandler);
 
 

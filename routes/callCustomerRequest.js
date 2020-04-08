@@ -21,12 +21,12 @@ const CallCustomerRequest = (request, response) => {  console.log("Request", req
     `Hi ${doctorName}, I am calling from OneZoey Live. Connecting you to your patient`,
   );
 
-  response.dial(patientMobileNumber);
-  response.say('Goodbye');
+  twiml.dial(patientMobileNumber);
+  twiml.say('Goodbye');
 
   // Render the response as XML in reply to the webhook request
-  response.type("text/xml");
-  response.send(twiml.toString());
+  twiml.type("text/xml");
+  twiml.send(twiml.toString());
 };
 
 module.exports = CallCustomerRequest;
