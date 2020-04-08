@@ -69,6 +69,9 @@ export default {
     is_published: {
       type: Types.Boolean,
     },
+    registration_number: {
+      type: Types.String,
+    },
   },
   relations: {
     parent: [
