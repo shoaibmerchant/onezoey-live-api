@@ -152,7 +152,7 @@ const sendSMSToPatient = async (econsult, gql) => {
   const phone = patient.mobile;
 
   const econsultUrl = `${process.env.WEBSITE_URL}/econsult/confirm/${econsult.code}`;
-  const message = `Your appointment with ${doctor.name} is confirmed. Your appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}. Open ${econsultUrl} on your phone to connect with your doctor.`;
+  const message = `Your appointment with ${doctor.name} is confirmed. Your appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}. Open ${econsultUrl} on your phone to connect with your doctor. Please use Safari on iPhones and Google Chrome on Android to connect.`;
   console.log("params send to MSG91", phone, message);
 
   return gql
