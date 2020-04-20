@@ -103,7 +103,10 @@ export default {
         throw new ForbiddenError("Mobile number is not registered");
       }
 
-      const token = Authenticator.token({ role: "user", user: users[0] });
+      const authenticatedUser = { ...users[0] };
+      delete authenticatedUser.description;
+
+      const token = Authenticator.token({ role: "user", user: authenticatedUser });
       const userInfo = { ...users[0], token };
 
       return userInfo;
