@@ -38,6 +38,7 @@ export default {
         console.log('Econsult found', econsult);
         await sendSMSToDoctor(econsult, gql);
         await sendSMSToPatient(econsult, gql);
+        await sendSMSToInstituteAdmin(econsult, gql);
       }
 
       return true;
@@ -99,6 +100,13 @@ const getEConsult = async (econsultCode, gql) => {
             _created_at
             _updated_at
             _parent {
+              institute {
+                _id
+                name
+                address_line_2
+                institute_admin_email
+                institute_admin_mobile
+              }
               doctor {
                 _id
                 name
@@ -182,6 +190,32 @@ const sendSMSToDoctor = async (econsult, gql) => {
       console.log("error in response of sending via MSG91", err);
     });
 }
+
+
+const sendSMSToInstituteAdmin = async (econsult, gql) => {
+  const { doctor } = econsult._parent;
+  const { institute } = econsult._parent;
+  const { patient } = econsult._parent;
+
+  const phone = institute.institute_admin_mobile;
+
+  if (!phone) {  // if no institute admin
+    return true;
+  }
+
+  const message = `There is new econsultation appointment on OneZoey for ${doctor.name}. Patient Name is ${patient.name} (${patient.age}, ${patient.sex}), and appointment time is ${econsult.appointment_time} on ${dayjs(econsult.appointment_date).format("D MMM YYYY")}.`;
+  console.log("params send to MSG91", phone, message);
+
+  return gql
+    .mutation(sendSMSMutation({ phone, message }))
+    .then(res => {
+      console.log("in response of sending via MSG91", res);
+    })
+    .catch(err => {
+      console.log("error in response of sending via MSG91", err);
+    });
+}
+
 
 let sendSMSMutation = ({ phone, message }) => `
 mutation SendOTPMSG {
