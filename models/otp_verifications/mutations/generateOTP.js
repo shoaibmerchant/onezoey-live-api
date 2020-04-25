@@ -41,7 +41,7 @@ export default {
 
         otp = getRandomOtp();
 
-        const otpMessage = `Your OTP for OneZoey for Doctor App is ${otp}.`;
+        const otpMessage = `Your OTP for OneZoey App is ${otp}.`;
         console.log("otpMessage ", otpMessage);
 
         const userPhone = `+91${input.phone}`;

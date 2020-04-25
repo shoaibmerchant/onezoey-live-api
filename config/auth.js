@@ -12,7 +12,8 @@ const auth = {
   },
   acl: {
     anonymous: "*",
-    user: "*"
+    user: "*",
+    institute_admin: "*",
   }
 };
 

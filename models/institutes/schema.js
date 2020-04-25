@@ -61,7 +61,19 @@ export default {
     },
     is_published: {
       type: Types.Boolean,
-    }
+    },
+    token: {
+      type: Types.String,
+    },
+    institute_admin_name: {
+      type: Types.String,
+    },
+    institute_admin_email: {
+      type: Types.String,
+    },
+    institute_admin_mobile: {
+      type: Types.String,
+    },
   },
   relations: {
     children: [
